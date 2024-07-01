@@ -32,6 +32,19 @@ for f in files:
         temp_df["set"] = gyr_set
         gyr_set += 1
         gyr_df = pd.concat([gyr_df, temp_df])
+        
+# Convert epoch into datetime object and set it as an index for the dataframe
+acc_df.index = pd.to_datetime(acc_df["epoch (ms)"], unit="ms")
+gyr_df.index = pd.to_datetime(gyr_df["epoch (ms)"], unit="ms")
+
+# Remove unnecessary time columns
+del acc_df["epoch (ms)"]
+del acc_df["time (01:00)"]
+del acc_df["elapsed (s)"]
+
+del gyr_df["epoch (ms)"]
+del gyr_df["time (01:00)"]
+del gyr_df["elapsed (s)"]
 
     
 
