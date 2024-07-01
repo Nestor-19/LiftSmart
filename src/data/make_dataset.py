@@ -24,9 +24,13 @@ for f in files:
     temp_df["category"] = category
     
     if 'Accelerometer' in f:
+        temp_df["set"] = acc_set
+        acc_set += 1
         acc_df = pd.concat([acc_df, temp_df])
         
     if 'Gyroscope' in f:
+        temp_df["set"] = gyr_set
+        gyr_set += 1
         gyr_df = pd.concat([gyr_df, temp_df])
 
     
