@@ -1,9 +1,42 @@
 import pandas as pd
 from glob import glob
 
-# Read a CSV file
-acc_file = pd.read_csv("../../data/raw/MotionData/A-bench-heavy_MetaWear_2019-01-14T14.22.49.165_C42732BE255C_Accelerometer_12.500Hz_1.4.4.csv")
+files = glob("../../data/raw/MotionData/*.csv")
 
-gyr_file = pd.read_csv("../../data/raw/MotionData/A-bench-heavy_MetaWear_2019-01-14T14.22.49.165_C42732BE255C_Gyroscope_25.000Hz_1.4.4.csv")
+data_path = "../../data/raw/MotionData/"    
+
+acc_df = pd.DataFrame()
+gyr_df = pd.DataFrame()
+
+acc_set = 1
+gyr_set = 1
+
+# Looping over, parse and build Accelerometer and Gyroscope dataframes
+for f in files:
+    athlete = f.split("-")[0].replace(data_path, "")
+    exercise = f.split("-")[1]
+    category = f.split("-")[2].rstrip("123").rstrip("_MetaWear_2019")
+    
+    temp_df = pd.read_csv(f)
+
+    temp_df["athlete"] = athlete
+    temp_df["exercise"] = exercise
+    temp_df["category"] = category
+    
+    if 'Accelerometer' in f:
+        acc_df = pd.concat([acc_df, temp_df])
+        
+    if 'Gyroscope' in f:
+        gyr_df = pd.concat([gyr_df, temp_df])
+
+    
+
+        
+
+    
+    
+
+    
+
 
 
