@@ -55,3 +55,22 @@ acc_df, gyr_df = read_data(files, data_path)
 merged_df = pd.concat([acc_df.iloc[:,:3], gyr_df], axis=1)
 
 merged_df.columns = ["acc_x", "acc_y", "acc_z", "gyr_x", "gyr_y", "gyr_z", "athlete", "exercise", "category", "set"]
+
+sampling = {
+    'acc_x': "mean",
+    'acc_y': "mean",
+    'acc_z': "mean",
+    'gyr_x': "mean",
+    'gyr_y': "mean",
+    'gyr_z': "mean",
+    'athlete': "last",
+    'exercise': "last",
+    'category': "last",
+    'set': "last"
+}
+
+days = [g for n, g in merged_df.groupby(pd.Grouper(freq='D'))]
+
+resampled_data = pd.concat([df.resample(rule='200ms').apply(sampling).dropna() for df in days])
+
+
