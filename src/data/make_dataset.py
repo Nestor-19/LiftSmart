@@ -73,4 +73,6 @@ days = [g for n, g in merged_df.groupby(pd.Grouper(freq='D'))]
 
 resampled_data = pd.concat([df.resample(rule='200ms').apply(sampling).dropna() for df in days])
 
+resampled_data['set'] = resampled_data['set'].astype('int')
+
 
