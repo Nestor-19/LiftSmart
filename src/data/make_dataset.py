@@ -71,8 +71,10 @@ sampling = {
 
 days = [g for n, g in merged_df.groupby(pd.Grouper(freq='D'))]
 
+# Resample dataframe to get rid of 'NA' values
 resampled_data = pd.concat([df.resample(rule='200ms').apply(sampling).dropna() for df in days])
 
 resampled_data['set'] = resampled_data['set'].astype('int')
 
-
+# Export data as a .pkl file to /data/interim
+resampled_data.to_pickle('../../data/interim/processed_data.pkl')
