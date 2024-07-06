@@ -10,11 +10,25 @@ mpl.rcParams['figure.dpi'] = 100
 # Read the dataframe stored in data/interim/
 df = pd.read_pickle('../../data/interim/processed_data.pkl')
 
-# Plot a graph for each exercise
-for exercise in df['exercise'].unique():
-    subset = df[df['exercise'] == exercise]
-    fig, ax = plt.subplots()
-    plt.plot(subset[:100]['acc_y'].reset_index(drop=True), label=exercise)
-    plt.legend()
-    plt.show()
+# Plot a graph for accelerometer and gyroscope data for all athletes
+athletes = df['athlete'].unique()
+exercises = df['exercise'].unique()
 
+for exercise in exercises:
+    for athlete in athletes:
+        combined_plot_df = (df.query(f"exercise == '{exercise}'")
+                       .query(f"athlete == '{athlete}'")
+                       .reset_index())
+        
+        if len(combined_plot_df) > 0:
+            fig, ax  = plt.subplots(nrows=2, sharex=True, figsize=(20, 10))
+            combined_plot_df[["acc_x", "acc_y", "acc_z"]].plot(ax = ax[0])
+            combined_plot_df[["gyr_x", "gyr_y", "gyr_z"]].plot(ax = ax[1])
+            
+            ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol=3, fancybox=True, shadow=True)
+            ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol=3, fancybox=True, shadow=True)
+            
+            ax[1].set_xlabel("samples")
+            
+            plt.savefig(f"../../reports/figures/{exercise.title()} ({athlete}).png")
+            plt.show()
