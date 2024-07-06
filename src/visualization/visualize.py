@@ -28,6 +28,7 @@ for exercise in exercises:
             ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol=3, fancybox=True, shadow=True)
             ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol=3, fancybox=True, shadow=True)
             
+            ax[0].set_title(f"Exercise: {exercise.title()}, Athlete: {athlete}", loc='left', pad=20)
             ax[1].set_xlabel("samples")
             
             plt.savefig(f"../../reports/figures/{exercise.title()} ({athlete}).png")
