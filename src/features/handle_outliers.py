@@ -54,3 +54,6 @@ for col in outlier_columns:
         
         outlier_count = len(dataset) - len(dataset[col].dropna())
         print(f"Removed {outlier_count} from {col} for {exercise}")
+        
+# Export the cleaned dataframe
+removed_outliers_df.to_pickle('../../data/interim/outliers_removed_data.pkl')
