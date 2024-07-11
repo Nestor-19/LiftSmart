@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from DataTransformation import LowPassFilter
 
 # Modify plot settings
 plt.style.use('fivethirtyeight')
@@ -22,6 +23,18 @@ for s in df['set'].unique():
     df.loc[(df['set'] == s), 'duration'] = set_duration.seconds
 
 mean_duration = df.groupby(['category'])['duration'].mean()
+
+# Use the Butterworth lowpass filter to remove noise from the data
+df_lowpass = df.copy()
+
+sampling_freq = 1000/200
+cutoff_freq = 1.2
+
+for col in predictor_columns:
+    df_lowpass = LowPassFilter().low_pass_filter(df_lowpass, col, sampling_freq, cutoff_freq, order=5)
+    df_lowpass[col] = df_lowpass[col + '_lowpass']
+    del df_lowpass[col + '_lowpass']
+    
 
 
 
