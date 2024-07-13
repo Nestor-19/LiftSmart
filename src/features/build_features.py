@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from DataTransformation import LowPassFilter
+from DataTransformation import LowPassFilter, PrincipalComponentAnalysis
 
 # Modify plot settings
 plt.style.use('fivethirtyeight')
@@ -35,6 +35,23 @@ for col in predictor_columns:
     df_lowpass[col] = df_lowpass[col + '_lowpass']
     del df_lowpass[col + '_lowpass']
     
+# Use Principal component analysis (PCA) to reduce the complexity of the data
+df_pca  = df_lowpass.copy()
+
+pc_values = PrincipalComponentAnalysis().determine_pc_explained_variance(df_pca, predictor_columns)
+
+# Plot the variance captured against the component number to determine the optimal component number
+plt.figure(figsize=(10, 10))
+plt.plot(range(1, len(predictor_columns) + 1), pc_values)
+plt.xlabel('Component Number')
+plt.ylabel('Explained Variance')
+plt.show()
+
+# From the plot, and using the elbow technique, we deduce that the optimal component number = 3
+df_pca = PrincipalComponentAnalysis().apply_pca(df_pca, predictor_columns, 3)
+
+
+
 
 
 
