@@ -50,9 +50,12 @@ plt.show()
 # From the plot, and using the elbow technique, we deduce that the optimal component number = 3
 df_pca = PrincipalComponentAnalysis().apply_pca(df_pca, predictor_columns, 3)
 
+# Convert the accelerometer and gyroscope data into scalars by using the sum of squares
+df_squared = df_pca.copy()
 
+acc_r = (df_squared['acc_x'] ** 2) + (df_squared['acc_y'] ** 2) + (df_squared['acc_z'] ** 2)
+gyr_r = (df_squared['gyr_x'] ** 2) + (df_squared['gyr_y'] ** 2) + (df_squared['gyr_z'] ** 2)
 
-
-
-
+df_squared['acc_r'] = np.sqrt(acc_r)
+df_squared['gyr_r'] = np.sqrt(gyr_r)
 
