@@ -95,3 +95,6 @@ for s in df_freq['set'].unique():
     df_freq_list.append(subset)
 
 df_freq = pd.concat(df_freq_list).set_index('epoch (ms)', drop=True)
+
+df_freq = df_freq.dropna()
+df_freq = df_freq.iloc[::2]
