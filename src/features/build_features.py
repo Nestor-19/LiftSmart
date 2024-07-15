@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from DataTransformation import LowPassFilter, PrincipalComponentAnalysis
+from TemporalAbstraction import NumericalAbstraction
 
 # Modify plot settings
 plt.style.use('fivethirtyeight')
@@ -59,3 +60,19 @@ gyr_r = (df_squared['gyr_x'] ** 2) + (df_squared['gyr_y'] ** 2) + (df_squared['g
 df_squared['acc_r'] = np.sqrt(acc_r)
 df_squared['gyr_r'] = np.sqrt(gyr_r)
 
+# Use temporal abstraction to get the mean and std over a window of 5 seconds in data frame
+df_temporal = df_squared.copy()
+
+predictor_columns = predictor_columns + ['acc_r', 'gyr_r']
+
+window_size = int(1000/200)
+
+df_temporal_list = []
+for s in df_temporal['set'].unique():
+    subset = df_temporal[df_temporal['set'] == s].copy()
+    for col in predictor_columns:
+        subset = NumericalAbstraction().abstract_numerical(subset, [col], window_size, 'mean')
+        subset = NumericalAbstraction().abstract_numerical(subset, [col], window_size, 'std')
+    df_temporal_list.append(subset)
+    
+df_temporal = pd.concat(df_temporal_list)
