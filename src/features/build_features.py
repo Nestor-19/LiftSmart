@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from DataTransformation import LowPassFilter, PrincipalComponentAnalysis
 from TemporalAbstraction import NumericalAbstraction
+from FrequencyAbstraction import FourierTransformation
 
 # Modify plot settings
 plt.style.use('fivethirtyeight')
@@ -70,9 +71,27 @@ window_size = int(1000/200)
 df_temporal_list = []
 for s in df_temporal['set'].unique():
     subset = df_temporal[df_temporal['set'] == s].copy()
-    for col in predictor_columns:
-        subset = NumericalAbstraction().abstract_numerical(subset, [col], window_size, 'mean')
-        subset = NumericalAbstraction().abstract_numerical(subset, [col], window_size, 'std')
+    subset = NumericalAbstraction().abstract_numerical(subset, predictor_columns, window_size, 'mean')
+    subset = NumericalAbstraction().abstract_numerical(subset, predictor_columns, window_size, 'std')
     df_temporal_list.append(subset)
     
 df_temporal = pd.concat(df_temporal_list)
+
+# Use Discrete Fourier Transformation (DFT) to extract the following features:
+# 1. Amplitude
+# 2. Max frequency
+# 3. Weighted frequency (average)
+# 4. Power spectral entropy
+
+df_freq = df_temporal.copy().reset_index()
+
+fs = int(1000/200)
+ws = int(2800/200)
+
+df_freq_list = []
+for s in df_freq['set'].unique():
+    subset = df_freq[df_freq['set'] == s].reset_index(drop=True).copy()
+    subset = FourierTransformation().abstract_frequency(subset, predictor_columns, ws, fs)
+    df_freq_list.append(subset)
+
+df_freq = pd.concat(df_freq_list).set_index('epoch (ms)', drop=True)
