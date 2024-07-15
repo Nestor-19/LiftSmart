@@ -113,3 +113,26 @@ for k in k_values:
     cluster_labels = kmeans.fit_predict(subset)
     inertias.append(kmeans.inertia_)
 
+# Plot a graph with inertia against the number of clusters
+plt.figure(figsize=(10, 10))
+plt.plot(k_values, inertias)
+plt.xlabel('Number of clusters (k)')
+plt.ylabel('Sum of squared distanctes (inertia)')
+plt.show()
+
+# Using the elbow method, we deduce that the optimal number of clusters = 5
+kmeans = KMeans(n_clusters=5, n_init=20, random_state=0)
+subset = df_cluster[cluster_cols]
+df_cluster['cluster'] = kmeans.fit_predict(subset)
+
+# Generate a 3D scatter plot of the clustered data points for each exercise
+fig = plt.figure(figsize=(15, 15))
+ax  = fig.add_subplot(projection='3d')
+for e in df_cluster['exercise'].unique():
+    subset = df_cluster[df_cluster['exercise'] == e]
+    ax.scatter(subset['acc_x'], subset['acc_y'], subset['acc_z'], label=e)
+ax.set_xlabel("X-axis")
+ax.set_ylabel("Y-axis")
+ax.set_zlabel("Z-axis")
+plt.legend()
+plt.show()
