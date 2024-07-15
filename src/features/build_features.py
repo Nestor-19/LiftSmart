@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from DataTransformation import LowPassFilter, PrincipalComponentAnalysis
 from TemporalAbstraction import NumericalAbstraction
 from FrequencyAbstraction import FourierTransformation
+from sklearn.cluster import KMeans
 
 # Modify plot settings
 plt.style.use('fivethirtyeight')
@@ -98,3 +99,17 @@ df_freq = pd.concat(df_freq_list).set_index('epoch (ms)', drop=True)
 
 df_freq = df_freq.dropna()
 df_freq = df_freq.iloc[::2]
+
+# Perform K-means clustering on the dataframe
+df_cluster = df_freq.copy()
+
+cluster_cols = ['acc_x', 'acc_y', 'acc_z']
+k_values = range(2, 10)
+inertias = []
+
+for k in k_values:
+    subset = df_cluster[cluster_cols]
+    kmeans = KMeans(n_clusters=k, n_init=20, random_state=0)
+    cluster_labels = kmeans.fit_predict(subset)
+    inertias.append(kmeans.inertia_)
+
